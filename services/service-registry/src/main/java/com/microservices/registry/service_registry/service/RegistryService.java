@@ -14,14 +14,11 @@ public class RegistryService {
 
     public void registerService(String serviceId){
         redisTemplate.opsForValue()
-                .set("service"+serviceId+":registered","true");
+                .set("service:" + serviceId + ":registered", "true");
     }
 
     public void heartbeat(String serviceId){
-        redisTemplate.opsForValue()
-                .set("service"+serviceId+":lastheartbeat",
-                        String.valueOf(System.currentTimeMillis()));
-
+        // Only publish event
         heartbeatProducer.sendHeartbeat(serviceId);
     }
 }
