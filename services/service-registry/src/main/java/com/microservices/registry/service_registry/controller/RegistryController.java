@@ -27,4 +27,11 @@ public class RegistryController {
         registryService.heartbeat(request.getServiceId());
         return "Heartbeat received";
     }
+
+    @PostMapping("/failure")
+    public String simulateFailure(@RequestBody HeartBeatRequest request) {
+        registryService.simulateFailure(request.getServiceId());
+        return "Failure event sent";
+    }
+
 }
