@@ -1,125 +1,47 @@
 # Event-Driven Service Health & Failure Monitoring Platform
 
-## Tech Stack
-- Java 21
-- Spring Boot
-- Apache Kafka (KRaft mode)
-- Redis
-- Docker Compose
+A compact event-driven microservices example that demonstrates service registration, heartbeat publishing, failure detection, and lightweight state using Apache Kafka and Redis. Intended for local development, demos, and experimentation.
 
-## Architecture
-- Service Registry (Producer)
-- Kafka Event Backbone
-- Redis for Fast State
+## Tech stack
+- Java 21 (Spring Boot)
+- Apache Kafka (KRaft) — event backbone
+- Redis — fast state (timestamps, atomic counters)
+- Docker Compose — local infra
+- Maven — build and run
 
-## How to Run
+## Services (brief)
+- api-gateway : routes client requests to internal services and enforces rate limits.
+- service-registry : registers services, accepts heartbeats, publishes heartbeat events to Kafka, writes lastHeartbeat to Redis.
+- failure-analyzer : consumes Kafka events, applies detection rules, increments `service:{id}:failureCount` in Redis and emits diagnostics.
+- health-query-service : reads/aggregates state from Redis and exposes health endpoints and summaries.
+- notification-service : consumes diagnostics/notifications and forwards alerts or messages.
 
-### Start Infra
-docker compose up -d
+## High-level flow
+1. Services register with `service-registry` and post periodic heartbeats.
+2. `service-registry` stores quick state in Redis and publishes heartbeat events to Kafka.
+3. `failure-analyzer` consumes events, applies rules, and increments failure counters in Redis when necessary.
+4. `health-query-service` provides read endpoints for status and aggregates data for UIs/ops.
+5. `notification-service` handles diagnostics/alerts produced by the analyzer.
 
-### Run Service
-Run ServiceRegistryApplication
+## Main APIs (examples)
+- Service Registry (via API Gateway)
+  - POST /api/registry/register — register a service
+  - POST /api/registry/heartbeat — submit a heartbeat
+- Health Query (via API Gateway)
+  - GET /health/{serviceId} — service status and last heartbeat
+  - GET /health/services?status={UP|DOWN} — list services (filter by status)
+- Notifications (via API Gateway)
+  - POST /api/notifications — send/forward a notification
 
-### Test
-POST /api/registry/register
-POST /api/registry/heartbeat
+## Quick start
+1. Start infra: `docker compose up -d` (starts Kafka + Redis containers from `infra/`)
+2. Run services from your IDE or with Maven: `./mvnw -pl <module> spring-boot:run`
+3. Exercise the main APIs with Postman or curl (see `EventDriven_Postman_results/` for example screenshots)
 
-
-# Event-Driven Service Health & Failure Monitoring Platform
-
-A backend-focused microservices project that demonstrates:
-- Event-driven communication using Apache Kafka (KRaft mode)
-- Redis-backed state management
-- Service registration and heartbeat tracking
-- Docker-based infrastructure setup
-
----
-
-## 🏗 Architecture
-
-Service Registry:
-- REST API for service registration
-- Publishes heartbeat events to Kafka
-- Stores last heartbeat timestamp in Redis
-
-Kafka:
-- Runs in KRaft mode (no Zookeeper)
-- Single-node local development setup
-
-Redis:
-- Stores fast-changing transient state
-- Used for heartbeat timestamps
-
-
-🧠 Failure Events Pipeline – Design & Challenges
-📌 Problem
-
-When implementing failure-events, we encountered a deserialization failure:
-
-ClassNotFoundException: com.microservices.registry.service_registry.kafka.FailureEvent
-
-📌 Root Cause
-
-Spring Kafka’s JsonSerializer automatically adds the producer’s fully qualified class name in message headers.
-
-Since the consumer runs in a separate microservice with a different package structure, it attempted to load the producer’s class — which does not exist in the consumer.
-
-This caused:
-
-MessageConversionException
-
-RecordDeserializationException
-
-Consumer crash loop
-
-📌 Solution
-
-We configured the consumer to:
-
-Ignore type headers
-
-Use a local FailureEvent class
-
-Configuration:
-
-spring:
-kafka:
-consumer:
-value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-properties:
-spring.json.trusted.packages: "*"
-spring.json.use.type.headers: false
-spring.json.value.default.type: com.microservices.failure.failure_analyzer.kafka.FailureEvent
-
-
-This ensures:
-
-Services are loosely coupled
-
-Only JSON structure matters
-
-No dependency on producer package names
-
-📌 Redis Atomic Failure Counter
-
-Failures are tracked using Redis atomic increment:
-
-redisTemplate.opsForValue().increment("service:{id}:failureCount");
-
-
-This leverages Redis INCR command which is:
-
-Atomic
-
-Thread-safe
-
-Lock-free
-
-High performance
 
 # Event-driven Postman Results
 
-This section contains Postman screenshots captured while exercising the event-driven platform endpoints and flows (requests, responses, and observed state). Each screenshot is embedded below with a short description you can refine.
+This section contains Postman screenshots captured while exercising the event-driven platform endpoints and flows (requests, responses, and observed state)
 
 ### Screenshot 2026-05-10 142449
 <img width="1919" height="866" alt="Screenshot-2026-05-10-142449" src="https://github.com/user-attachments/assets/03ea09f5-27c6-42c6-98aa-6b15f5cfee06" />
@@ -179,4 +101,4 @@ Health summary or aggregated system status response.
 
 <img width="1919" height="900" alt="Screenshot-2026-05-10-143454" src="https://github.com/user-attachments/assets/c5d07136-6ce6-4df2-a80a-b3b8f285b44c" />
 
-Final example screenshot — replace with final caption.
+
