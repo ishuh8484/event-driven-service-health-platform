@@ -119,61 +119,60 @@ High performance
 
 # Event-driven Postman Results
 
-This section contains Postman screenshots captured while exercising the event-driven platform endpoints and flows (requests, responses, and observed state). Each screenshot is embedded below with a short placeholder description you can refine.
+This section contains Postman screenshots captured while exercising the event-driven platform endpoints and flows (requests, responses, and observed state). Each screenshot is embedded below with a short description you can refine.
 
 ### Screenshot 2026-05-10 142449
 ![Screenshot 2026-05-10 142449](./EventDriven_Postman_results/Screenshot-2026-05-10-142449.png)
-Placeholder: Shows a POST request/response that triggered an event (verify endpoint and response payload).
+POST request/response that triggered an event (verify endpoint and response payload).
 
 ### Screenshot 2026-05-10 142556
 ![Screenshot 2026-05-10 142556](./EventDriven_Postman_results/Screenshot-2026-05-10-142556.png)
-Placeholder: Shows the health-check or status response for a service.
+Health-check or status response for a service.
 
 ### Screenshot 2026-05-10 142659
 ![Screenshot 2026-05-10 142659](./EventDriven_Postman_results/Screenshot-2026-05-10-142659.png)
-Placeholder: Shows event consumption or downstream behavior after publish.
+Event consumption or downstream behavior after publish.
 
 ### Screenshot 2026-05-10 142722
 ![Screenshot 2026-05-10 142722](./EventDriven_Postman_results/Screenshot-2026-05-10-142722.png)
-Placeholder: Shows a filtered GET request (e.g., services by status).
+Filtered GET request example (e.g., services by status).
 
 ### Screenshot 2026-05-10 142802
 ![Screenshot 2026-05-10 142802](./EventDriven_Postman_results/Screenshot-2026-05-10-142802.png)
-Placeholder: Shows an error or failure event payload used by the failure analyzer.
+Error or failure event payload used by the failure analyzer.
 
 ### Screenshot 2026-05-10 142829
 ![Screenshot 2026-05-10 142829](./EventDriven_Postman_results/Screenshot-2026-05-10-142829.png)
-Placeholder: Another request/response example (replace with specific description).
+Request/response example (replace with specific description if needed).
 
 ### Screenshot 2026-05-10 142947
 ![Screenshot 2026-05-10 142947](./EventDriven_Postman_results/Screenshot-2026-05-10-142947.png)
-Placeholder: Timeline or history query response demonstrating recent events.
+Timeline or history query response demonstrating recent events.
 
 ### Screenshot 2026-05-10 143042
 ![Screenshot 2026-05-10 143042](./EventDriven_Postman_results/Screenshot-2026-05-10-143042.png)
-Placeholder: Shows service registry registration flow or acknowledgement.
+Service registry registration flow or acknowledgement.
 
 ### Screenshot 2026-05-10 143136
 ![Screenshot 2026-05-10 143136](./EventDriven_Postman_results/Screenshot-2026-05-10-143136.png)
-Placeholder: Shows service failure count or Redis-backed state snapshot.
+Service failure count or Redis-backed state snapshot.
 
 ### Screenshot 2026-05-10 143224
 ![Screenshot 2026-05-10 143224](./EventDriven_Postman_results/Screenshot-2026-05-10-143224.png)
-Placeholder: Captures a Kafka message payload or consumer response.
+Kafka message payload or consumer response capture.
 
 ### Screenshot 2026-05-10 143256
 ![Screenshot 2026-05-10 143256](./EventDriven_Postman_results/Screenshot-2026-05-10-143256.png)
-Placeholder: Additional example — replace with descriptive caption.
+Additional example — replace with descriptive caption.
 
 ### Screenshot 2026-05-10 143345
 ![Screenshot 2026-05-10 143345](./EventDriven_Postman_results/Screenshot-2026-05-10-143345.png)
-Placeholder: Failure analyzer output or diagnostic response.
+Failure analyzer output or diagnostic response.
 
 ### Screenshot 2026-05-10 143416
 ![Screenshot 2026-05-10 143416](./EventDriven_Postman_results/Screenshot-2026-05-10-143416.png)
-Placeholder: Health summary or aggregated system status response.
+Health summary or aggregated system status response.
 
 ### Screenshot 2026-05-10 143454
 ![Screenshot 2026-05-10 143454](./EventDriven_Postman_results/Screenshot-2026-05-10-143454.png)
-Placeholder: Final example screenshot — replace with final caption.
-
+Final example screenshot — replace with final caption.
