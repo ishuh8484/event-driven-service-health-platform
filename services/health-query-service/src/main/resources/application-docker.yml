@@ -1,0 +1,6 @@
+# Docker profile: overrides localhost with container names
+spring:
+  data:
+    redis:
+      host: redis
+

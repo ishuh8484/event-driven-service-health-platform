@@ -1,0 +1,8 @@
+# Docker profile: overrides localhost with container names
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+  data:
+    redis:
+      host: redis
+

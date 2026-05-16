@@ -4,10 +4,9 @@ import com.microservices.registry.service_registry.model.HeartBeatRequest;
 import com.microservices.registry.service_registry.model.RegisterRequest;
 import com.microservices.registry.service_registry.service.RegistryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/registry")
@@ -34,4 +33,12 @@ public class RegistryController {
         return "Failure event sent";
     }
 
+    @DeleteMapping("/{serviceId}")
+    public Map<String, String> deregister(@PathVariable String serviceId) {
+        registryService.deregisterService(serviceId, "MANUAL");
+        return Map.of(
+                "message", "Service deregistered successfully",
+                "serviceId", serviceId
+        );
+    }
 }

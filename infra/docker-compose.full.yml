@@ -1,0 +1,93 @@
+# ═══════════════════════════════════════════════════════════
+# FULL DEPLOYMENT — All services + infrastructure
+# Usage: docker compose -f docker-compose.full.yml up -d
+# This builds and runs EVERYTHING in Docker containers
+# First build will be slow (~10-15 min) as Maven downloads deps
+# Subsequent builds are cached and fast
+# ═══════════════════════════════════════════════════════════
+services:
+
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx256m"
+    mem_limit: 768m
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    mem_limit: 256m
+
+  service-registry:
+    build: ../services/service-registry
+    container_name: service-registry
+    ports:
+      - "8081:8081"
+    depends_on:
+      - kafka
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  failure-analyzer:
+    build: ../services/failure-analyzer
+    container_name: failure-analyzer
+    ports:
+      - "8082:8082"
+    depends_on:
+      - kafka
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  health-query-service:
+    build: ../services/health-query-service
+    container_name: health-query-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  notification-service:
+    build: ../services/notification-service
+    container_name: notification-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  api-gateway:
+    build: ../services/api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-registry
+      - failure-analyzer
+      - health-query-service
+      - notification-service
+      - redis
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+

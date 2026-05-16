@@ -11,30 +11,27 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HeartbeatConsumer {
 
-    //Kafka stores it.
-    //Failure Analyzer:
-    //Consumes event
-    //Logs it
-    //Updates Redis
-    //Completely independent
-
     private final StringRedisTemplate redisTemplate;
 
-    @KafkaListener(topics = "heartbeat-events", groupId = "failure-analyzer-group")
-    public void consume(String serviceId) {
+    @KafkaListener(
+            topics = "heartbeat-events",
+            containerFactory = "heartbeatKafkaListenerContainerFactory"
+    )
+    public void consume(HeartbeatEvent event) {
 
-        long now = System.currentTimeMillis();
-
+        String serviceId = event.getServiceId();
         log.info("Received heartbeat event for service: {}", serviceId);
 
-        // to Store last heartbeat timestamp
         redisTemplate.opsForValue().set(
                 "service:" + serviceId + ":lastHeartbeat",
-                String.valueOf(now)
+                String.valueOf(System.currentTimeMillis())
         );
 
+        // lifetime heartbeat counter — failure rate calculate karne ke liye
+        redisTemplate.opsForValue().increment(
+                "service:" + serviceId + ":heartbeatCount"
+        );
 
-        // to initially mark healthy
         redisTemplate.opsForValue().set(
                 "service:" + serviceId + ":healthStatus",
                 "HEALTHY"

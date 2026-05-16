@@ -1,3 +1,8 @@
+# ═══════════════════════════════════════════════════════════
+# LOCAL DEV — Infrastructure only (Kafka + Redis)
+# Usage: docker compose up -d
+# Then run Java services from IntelliJ
+# ═══════════════════════════════════════════════════════════
 services:
 
   kafka:
@@ -27,3 +32,5 @@ services:
     ports:
       - "6379:6379"
     mem_limit: 256m
+
+

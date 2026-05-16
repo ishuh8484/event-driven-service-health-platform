@@ -1,0 +1,30 @@
+
+spring:
+  data:
+    redis:
+      host: redis
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: service-registry
+              uri: http://service-registry:8081
+              predicates:
+                - Path=/api/registry/**
+
+            - id: health-query
+              uri: http://health-query-service:8083
+              predicates:
+                - Path=/health/**
+
+            - id: failure-analyzer
+              uri: http://failure-analyzer:8082
+              predicates:
+                - Path=/api/health/**
+
+            - id: notification-service
+              uri: http://notification-service:8084
+              predicates:
+                - Path=/api/notifications/**

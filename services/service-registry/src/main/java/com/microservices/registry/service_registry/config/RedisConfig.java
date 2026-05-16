@@ -13,6 +13,7 @@ public class RedisConfig {
         return new LettuceConnectionFactory();
     }
 
+    @Bean
     public StringRedisTemplate redisTemplate() {
         return new StringRedisTemplate(redisConnectionFactory());
     }
